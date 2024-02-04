@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    <title>Git Commit Form</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico/">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    <script>
+        function getElementsStartsWithId(id) {
+            var children = document.body.getElementsByTagName("*");
+            var elements = [],
+                child;
+            for (var i = 0, length = children.length; i < length; i++) {
+                child = children[i];
+                if (child.id.substr(0, id.length) == id) elements.push(child);
+            }
+            return elements;
+        }
+
+        function startRead() {
+            var file = document.getElementById("fileid").files[0];
+            if (file) getAsText(file);
+        }
+
+        function getAsText(readFile) {
+            var reader = new FileReader();
+            reader.readAsText(readFile, "UTF-8");
+            reader.onload = loaded;
+            reader.onerror = errorHandler;
+        }
+
+        function loaded(evt) {
+            var fileString = evt.target.result;
+            console.log(fileString);
+
+            tempDoc = document.getElementById("import-element");
+            tempDoc.innerHTML = fileString;
+
+            titleContentDOM = document.getElementsByName("titleContent");
+            document.getElementById("input-title").value = "";
+            if (titleContentDOM.length > 0) document.getElementById("input-title").value = titleContentDOM[0].innerHTML;
+
+            ticketsContentDOM = document.getElementsByName("ticketsContent");
+            document.getElementById("input-tickets").value = "";
+            if (ticketsContentDOM.length > 0) document.getElementById("input-tickets").value = ticketsContentDOM[0].innerHTML;
+
+            impactContentDOM = document.getElementsByName("impactContent");
+            document.getElementById("input-impact").value = "";
+            if (impactContentDOM.length > 0) document.getElementById("input-impact").value = impactContentDOM[0].innerHTML;
+
+            for (const cat of getElementsStartsWithId("checkbox")) {
+                cat.checked = false;
+            }
+
+            categoryContentDOM = document.getElementsByName("categoryContent");
+            if (categoryContentDOM.length > 0) {
+                categories = categoryContentDOM[0].innerHTML.split(", ");
+                for (const category of categories) {
+                    document.getElementById("checkbox-" + category).checked = true;
+                }
+            }
+
+            descriptionContentDOM = document.getElementById("input-description");
+            descriptionImported = document.getElementsByName("descriptionContent");
+            if (descriptionImported.length > 0) {
+                descriptionContentDOM.children[0].children[0].innerHTML = descriptionImported[0].innerHTML.replace("\n", "").replace("\t", "");
+            }
+
+            changesContentDOM = document.getElementById("input-changes");
+            changesImported = document.getElementsByName("changesContent");
+            if (changesImported.length > 0) {
+                changesContentDOM.children[0].children[0].innerHTML = changesImported[0].innerHTML.replace("\n", "").replace("\t", "");
+            }
+
+            testingContentDOM = document.getElementById("input-testing");
+            testingImported = document.getElementsByName("testingContent");
+            if (testingImported.length > 0) {
+                testingContentDOM.children[0].children[0].innerHTML = testingImported[0].innerHTML.replace("\n", "").replace("\t", "");
+            }
+
+            notesContentDOM = document.getElementById("input-notes");
+            notesImported = document.getElementsByName("notesContent");
+            if (notesImported.length > 0) {
+                notesContentDOM.children[0].children[0].innerHTML = notesImported[0].innerHTML.replace("\n", "").replace("\t", "");
+            }
+
+            linksContentDOM = document.getElementById("input-links");
+            linksImported = document.getElementsByName("linksContent");
+            if (linksImported.length > 0) {
+                linksContentDOM.children[0].children[0].innerHTML = linksImported[0].innerHTML.replace("\n", "").replace("\t", "");
+            }
+        }
+
+        function errorHandler(evt) {
+            if (evt.target.error.name == "NotReadableError") alert("File could not be read");
+        }
+    </script>
+
+    <!-- STYLESHEET -->
+    <style>
+        #form-container {
+            width: 500px;
+        }
+        
+        .row {
+            margin-top: 15px;
+        }
+        
+        .row.form-group {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        .btn {
+            margin-left: 15px;
+        }
+        
+        .change-link {
+            background-color: #000;
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+            bottom: 0;
+            color: #fff;
+            opacity: 0.8;
+            padding: 4px;
+            position: absolute;
+            text-align: center;
+            width: 150px;
+        }
+        
+        .change-link:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        img {
+            width: 150px;
+        }
+        
+        #editor-container {
+            height: 130px;
+        }
+        
+        html,
+        body {
+            min-height: 100%;
+        }
+        
+        body,
+        div,
+        form,
+        input,
+        select,
+        textarea,
+        p {
+            padding: 0;
+            margin: 0;
+            outline: none;
+            font-family: Roboto, Arial, sans-serif;
+            font-size: 14px;
+            color: #666;
+            line-height: 22px;
+        }
+        
+        h1 {
+            position: absolute;
+            margin: 0;
+            font-size: 32px;
+            color: #fff;
+            z-index: 2;
+        }
+        
+        h5 {
+            margin: 10px 0;
+        }
+        
+        .testbox {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: inherit;
+            padding: 20px;
+        }
+        
+        form {
+            width: 100%;
+            padding: 20px;
+            border-radius: 6px;
+            background: #fff;
+            box-shadow: 0 0 8px 0 #dbdbdb;
+        }
+        
+        .banner {
+            position: relative;
+            height: 120px;
+            background-color: #095484;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-radius: 3px;
+        }
+        
+        input,
+        select,
+        textarea {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        
+        input {
+            width: calc(100% - 10px);
+            padding: 5px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 7px 0;
+            background: transparent;
+        }
+        
+        textarea {
+            width: calc(100% - 12px);
+            padding: 5px;
+        }
+        
+        .item:hover p,
+        .item:hover i,
+        .question:hover p,
+        .question label:hover,
+        input:hover::placeholder,
+        a {
+            color: #095484;
+        }
+        
+        .item input:hover,
+        .item select:hover,
+        .item textarea:hover {
+            border: 1px solid transparent;
+            box-shadow: 0 0 2px 0 #474747;
+            color: #095484;
+        }
+        
+        .item {
+            position: relative;
+            margin: 10px 0px 20px 0px;
+        }
+        
+        input[type="date"]::-webkit-inner-spin-button {
+            display: none;
+        }
+        
+        .item i,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            font-size: 20px;
+            color: #a9a9a9;
+        }
+        
+        .item i {
+            right: 2%;
+            top: 30px;
+            z-index: 1;
+        }
+        
+        [type="date"]::-webkit-calendar-picker-indicator {
+            right: 1%;
+            z-index: 2;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        input[type=checkbox],
+        input[type=checkbox] {
+            display: none;
+        }
+        
+        label.checkbox,
+        label.check {
+            position: relative;
+            display: inline-block;
+            margin: 5px 20px 15px 0;
+            cursor: pointer;
+        }
+        
+        .question span {
+            margin-left: 30px;
+        }
+        
+        span.required {
+            margin-left: 0;
+            color: red;
+        }
+        
+        .checkbox-item label {
+            margin: 5px 20px 10px 0;
+        }
+        
+        label.checkbox:before,
+        label.check:before {
+            content: "";
+            position: absolute;
+            left: 0;
+        }
+        
+        label.checkbox:before {
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            border: 2px solid #095484;
+        }
+        
+        label.check:before {
+            top: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            border: 1px solid #095484;
+        }
+        
+        input[type=checkbox]:checked+.check:before {
+            background: #095484;
+        }
+        
+        label.checkbox:after {
+            left: 5px;
+            border: 3px solid #095484;
+        }
+        
+        label.check:after {
+            left: 4px;
+            border: 3px solid #fff;
+        }
+        
+        label.checkbox:after,
+        label.check:after {
+            content: "";
+            position: absolute;
+            top: 6px;
+            width: 8px;
+            height: 4px;
+            background: transparent;
+            border-top: none;
+            border-right: none;
+            transform: rotate(-45deg);
+            opacity: 0;
+        }
+        
+        input[type=checkbox]:checked+label:after,
+        input[type=checkbox]:checked+label:after {
+            opacity: 1;
+        }
+        
+        .btn-block {
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        button {
+            width: 150px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #095484;
+            font-size: 16px;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #3386b9;
+            transition: .2s ease;
+        }
+        
+        @media (min-width: 568px) {
+            .city-item {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .city-item input {
+                width: calc(50% - 20px);
+            }
+            .city-item select {
+                width: calc(50% - 8px);
+            }
+        }
+        
+        .input-block {
+            display: flex;
+            box-sizing: border-box;
+            margin: 30px 0px 0px 0px;
+        }
+        
+        .input-file {
+            margin-left: auto;
+            margin-right: 0;
+        }
+        
+        .btn-file {
+            margin: 0px 0px 0px 30px;
+        }
+    </style>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+</head>
+
+<body>
+
+    <div class="testbox">
+        <form action="">
+
+            <div class="banner">
+                <h1>Git Commit Form</h1>
+            </div>
+
+            <div class="input-block">
+                <div class="input-file">
+                    <input type="file" id="fileid">
+                </div>
+
+                <div class="btn-file">
+                    <button id="btn-load" onclick="startRead();">Import data</button>
+                </div>
+            </div>
+
+            <br/>
+            <i>Required:</i>
+            <br/>
+
+            <div class="item">
+                <p title="Bitbucket repo"><strong>Repo</strong> <span class="required">*</span></p>
+                <input type="text" id="input-repo" />
+            </div>
+
+
+            <div class="item">
+                <p title="Commit hash to link the note to"><strong>Commit Hash</strong> <span class="required">*</span></p>
+                <input type="text" id="input-hash" />
+            </div>
+
+            <div class="item">
+                <p title="Basic title for the commit"><strong>Title</strong> <span class="required">*</span></p>
+                <input type="text" id="input-title" />
+            </div>
+
+            <div class="item">
+                <p title="List of all ticket references from Jira & Fresh that relate to the commit: e.g. FIN-1685, FIN-1788"><strong>Tickets</strong> <span class="required">*</span></p>
+                <input type="text" id="input-tickets" />
+            </div>
+
+            <div class="item">
+                <p title="Application affected by change"><strong>Impact</strong> <span class="required">*</span></p>
+                <input type="text" id="input-impact" />
+            </div>
+
+            <div class="item">
+                <p title="Detailed description to be added to the public release notes"><strong>Description</strong> <span class="required">*</span></p>
+                <div id="input-description"></div>
+            </div>
+
+            <div class="question">
+                <p title="Reason for the commit"><strong>Category</strong> <span class="required">*</span></p>
+
+                <div class="question-answer">
+                    <div>
+                        <input type="checkbox" id="checkbox-Feature" name="reasonForCommit" value="Feature" required>
+                        <label for="checkbox-Feature" class="checkbox" id="lbl-checkbox-Feature"><span>Feature</span></label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="checkbox-Bugfix" name="reasonForCommit" value="Bugfix" required/>
+                        <label for="checkbox-Bugfix" class="checkbox" id="lbl-checkbox-Bugfix"><span>Bugfix</span></label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="checkbox-Documentation" name="reasonForCommit" value="Documentation" required/>
+                        <label for="checkbox-Documentation" class="checkbox" id="lbl-checkbox-Documentation"><span>Document</span></label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="checkbox-Enhancement" name="reasonForCommit" value="Enhancement" required/>
+                        <label for="checkbox-Enhancement" class="checkbox" id="lbl-checkbox-Enhancement"><span>Enhancement</span></label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="checkbox-Refactor" name="reasonForCommit" value="Refactor" required/>
+                        <label for="checkbox-Refactor" class="checkbox" id="lbl-checkbox-Refactor"><span>Refactor</span></label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="checkbox-Test" name="reasonForCommit" value="Test" required/>
+                        <label for="checkbox-Test" class="checkbox" id="lbl-checkbox-Test"><span>Test</span></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <br/>
+            <i>Optional:</i>
+            <br/>
+
+            <div class="item">
+                <p title="What changes were made to resolve this issue?"><strong>Code changes</strong></p>
+                <div id="input-changes"></div>
+            </div>
+
+            <div class="item">
+                <p title="Detailed steps to reproduce the issue and/or test the changes being committed"><strong>Testing and replication steps for the client</strong></p>
+                <div id="input-testing"></div>
+            </div>
+
+            <div class="item">
+                <p title="Any additional notes deemed important - this includes existing issues and backlog items"><strong>Additional notes</strong></p>
+                <div id="input-notes"></div>
+            </div>
+
+            <div class="item">
+                <p title="Links to related documentation or artefacts - such as specifications and standards, APIs, test data, online resources, etc"><strong>Additional links</strong></p>
+                <div id="input-links"></div>
+            </div>
+
+            <div class="btn-block">
+                <button type="submit" id="btn-create" onclick="produceTemplate();">CREATE!</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        var imgHandler = function(a) {
+            console.log(a);
+        }
+
+        var quillDescription = new Quill('#input-description', {
+            modules: {
+                toolbar: [
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['link', 'blockquote', 'code-block', 'image'],
+                    [{
+                        list: 'ordered'
+                    }, {
+                        list: 'bullet'
+                    }],
+                    [{
+                        'color': []
+                    }]
+                ]
+            },
+            theme: 'snow'
+        });
+
+        var quillChanges = new Quill('#input-changes', {
+            modules: {
+                toolbar: [
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['link', 'blockquote', 'code-block', 'image'],
+                    [{
+                        list: 'ordered'
+                    }, {
+                        list: 'bullet'
+                    }],
+                    [{
+                        'color': []
+                    }]
+                ]
+            },
+            theme: 'snow'
+        });
+
+        var quillTesting = new Quill('#input-testing', {
+            modules: {
+                toolbar: [
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['link', 'blockquote', 'code-block', 'image'],
+                    [{
+                        list: 'ordered'
+                    }, {
+                        list: 'bullet'
+                    }],
+                    [{
+                        'color': []
+                    }]
+                ]
+            },
+            theme: 'snow'
+        });
+
+        var quillNotes = new Quill('#input-notes', {
+            modules: {
+                toolbar: [
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['link', 'blockquote', 'code-block', 'image'],
+                    [{
+                        list: 'ordered'
+                    }, {
+                        list: 'bullet'
+                    }],
+                    [{
+                        'color': []
+                    }]
+                ]
+            },
+            theme: 'snow'
+        });
+
+        var quillLinks = new Quill('#input-links', {
+            modules: {
+                toolbar: [
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['link', 'blockquote', 'code-block', 'image'],
+                    [{
+                        list: 'ordered'
+                    }, {
+                        list: 'bullet'
+                    }],
+                    [{
+                        'color': []
+                    }]
+                ]
+            },
+            theme: 'snow'
+        });
+
+        var form = document.querySelector('form');
+        form.onsubmit = function() {
+            produceTemplate();
+            return false;
+        };
+
+        function produceTemplate() {
+
+            var repo = document.getElementById('input-repo').value;
+            var hash = document.getElementById('input-hash').value;
+            var title = document.getElementById('input-title').value;
+            var tickets = document.getElementById('input-tickets').value;
+            var impact = document.getElementById('input-impact').value;
+
+            var description = document.getElementById('input-description').innerHTML;
+            description = description.substring(description.indexOf(">") + 1, description.indexOf("</div>"));
+
+            var category = "";
+            var reasonsForCommit = document.getElementsByName('reasonForCommit');
+            if (reasonsForCommit != undefined) {
+                for (item in reasonsForCommit) {
+                    if (reasonsForCommit[item].checked) category += reasonsForCommit[item].value + ", ";
+                }
+            }
+
+            category = category.substring(0, category.length - 2);
+
+            var changes = document.getElementById('input-changes').innerHTML;
+            changes = changes.substring(changes.indexOf(">") + 1, changes.indexOf("</div>"));
+
+            var testing = document.getElementById('input-testing').innerHTML;
+            testing = testing.substring(testing.indexOf(">") + 1, testing.indexOf("</div>"));
+
+            var notes = document.getElementById('input-notes').innerHTML;
+            notes = notes.substring(notes.indexOf(">") + 1, notes.indexOf("</div>"));
+
+            var links = document.getElementById('input-links').innerHTML;
+            links = links.substring(links.indexOf(">") + 1, links.indexOf("</div>"));
+
+
+            // CREATE GIT TEMPLATE MESSAGE IN HTML FORMAT
+            var template = `<div class="uncollatedNote">`;
+            template += `\n\n    <div class="title">`;
+            template += `\n        <div class="titleContent">${title}</div>`;
+            template += `\n    </div>`;
+
+            template += `\n\n    <div class="uncollatedNoteContent">`;
+            template += `\n        <div class="chip">`;
+            template += `\n            <div class="chipIcon">`;
+            template += `\n                <span class="material-icons dark">&#xe54e;</span>`;
+            template += `\n            </div>`;
+            template += `\n            <div class="chipContent">`;
+            template += `\n                <div class="subheading">Tickets</div>`;
+            template += `\n            </div>`;
+            template += `\n        </div>`;
+            template += `\n        <div class="subheadingContent">${tickets}</div>`;
+            template += `\n    </div>`;
+
+            template += `\n\n    <div class="uncollatedNoteContent">`;
+            template += `\n        <div class="chip">`;
+            template += `\n            <div class="chipIcon">`;
+            template += `\n                <span class="material-icons dark">&#xe892;</span>`;
+            template += `\n            </div>`;
+            template += `\n            <div class="chipContent">`;
+            template += `\n                <div class="subheading">Category</div>`;
+            template += `\n            </div>`;
+            template += `\n        </div>`;
+            template += `\n        <div class="subheadingContent">${category}</div>`;
+            template += `\n    </div>`;
+
+            template += `\n\n    <div class="uncollatedNoteContent">`;
+            template += `\n        <div class="chip">`;
+            template += `\n            <div class="chipIcon">`;
+            template += `\n                <span class="material-icons dark">&#xe892;</span>`;
+            template += `\n            </div>`;
+            template += `\n            <div class="chipContent">`;
+            template += `\n                <div class="subheading">Impact</div>`;
+            template += `\n            </div>`;
+            template += `\n        </div>`;
+            template += `\n        <div class="subheadingContent">${impact}</div>`;
+            template += `\n    </div>`;
+
+            template += `\n\n    <div class="uncollatedNoteContent">`;
+            template += `\n        <div class="chip">`;
+            template += `\n            <div class="chipIcon">`;
+            template += `\n                <span class="material-icons dark">&#xe873;</span>`;
+            template += `\n            </div>`;
+            template += `\n            <div class="chipContent">`;
+            template += `\n                <div class="subheading">Description</div>`;
+            template += `\n            </div>`;
+            template += `\n        </div>`;
+            template += `\n        <div class="subheadingContent">${description}</div>`;
+            template += `\n    </div>`;
+
+            const START_OF_CONTENT = 11;
+            if (changes.length > START_OF_CONTENT) {
+                template += `\n\n    <div class="uncollatedNoteContent">`;
+                template += `\n        <div class="chip">`;
+                template += `\n            <div class="chipIcon">`;
+                template += `\n                <span class="material-icons dark">&#xf232;</span>`;
+                template += `\n            </div>`;
+                template += `\n            <div class="chipContent">`;
+                template += `\n                <div class="subheading">Changes</div>`;
+                template += `\n            </div>`;
+                template += `\n        </div>`;
+                template += `\n        <div class="subheadingContent">${changes}</div>`;
+                template += `\n    </div>`;
+            }
+
+            if (testing.length > START_OF_CONTENT) {
+                template += `\n\n    <div class="uncollatedNoteContent">`;
+                template += `\n        <div class="chip">`;
+                template += `\n            <div class="chipIcon">`;
+                template += `\n                <span class="material-icons dark">&#xe868;</span>`;
+                template += `\n            </div>`;
+                template += `\n            <div class="chipContent">`;
+                template += `\n                <div class="subheading">Testing</div>`;
+                template += `\n            </div>`;
+                template += `\n        </div>`;
+                template += `\n        <div class="subheadingContent">${testing}</div>`;
+                template += `\n    </div>`;
+            }
+
+            if (notes.length > START_OF_CONTENT) {
+                template += `\n\n    <div class="uncollatedNoteContent">`;
+                template += `\n        <div class="chip">`;
+                template += `\n            <div class="chipIcon">`;
+                template += `\n                <span class="material-icons dark">&#xf1fc;</span>`;
+                template += `\n            </div>`;
+                template += `\n            <div class="chipContent">`;
+                template += `\n                <div class="subheading">Notes</div>`;
+                template += `\n            </div>`;
+                template += `\n        </div>`;
+                template += `\n        <div class="subheadingContent">${notes}</div>`;
+                template += `\n    </div>`;
+            }
+
+            if (links.length > START_OF_CONTENT) {
+                template += `\n\n    <div class="uncollatedNoteContent">`;
+                template += `\n        <div class="chip">`;
+                template += `\n            <div class="chipIcon">`;
+                template += `\n                <span class="material-icons dark">&#xe157;</span>`;
+                template += `\n            </div>`;
+                template += `\n            <div class="chipContent">`;
+                template += `\n                <div class="subheading">Links</div>`;
+                template += `\n            </div>`;
+                template += `\n        </div>`;
+                template += `\n        <div class="subheadingContent">${links}</div>`;
+                template += `\n    </div>`;
+            }
+
+            template += `\n</div>`;
+
+            console.log(template);
+
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:5000/create-note",
+                data: {
+                    repo: repo,
+                    hash: hash,
+                    data: template
+                },
+            });
+            alert("DONE!")
+        }
+    </script>
+
+    <div id="import-element" style="display: none;"></div>
+
+</body>
+
+</html>

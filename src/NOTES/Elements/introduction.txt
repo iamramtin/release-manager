@@ -1,0 +1,4 @@
+The purpose of this document is to summarize the recent changes, enhancements, and bug fixes for this release.
+<br/><br/>
+Please read this document very carefully and follow all steps as instructed. This document must be used in conjunction with the release package and your UAT environment prior implementing to production.
+<br/><br/>

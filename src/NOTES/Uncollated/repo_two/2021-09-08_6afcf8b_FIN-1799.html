@@ -1,0 +1,134 @@
+<div class="uncollatedNote">
+    <div class="title">
+        <div class="titleContent">Refine thread pool and instance management for validators</div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon">
+                <span class="material-icons dark">&#xe54e;</span>
+            </div>
+            <div class="chipContent">
+                <div class="subheading">Tickets</div>
+            </div>
+        </div>
+        <div class="subheadingContent">FIN-1799</div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon">
+                <span class="material-icons dark">&#xe892;</span>
+            </div>
+            <div class="chipContent">
+                <div class="subheading">Type</div>
+            </div>
+        </div>
+        <div class="subheadingContent">Enhancement</div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon">
+                <span class="material-icons dark">&#xe8e1;</span>
+            </div>
+            <div class="chipContent">
+                <div class="subheading">Impact</div>
+            </div>
+        </div>
+        <div class="subheadingContent">Repo Four, Repo Five</div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon">
+                <span class="material-icons dark">&#xe873;</span>
+            </div>
+            <div class="chipContent">
+                <div class="subheading">Description</div>
+            </div>
+        </div>
+        <br/>
+        <div class="subheadingContent">
+            <p>Standard Bank EE has expressed a need for enhanced thread pools and management mechanisms for ensuring that the validators are routinely updated and adequately resourced for parallel processing.</p>
+            <p>To meet this demand and to assist Standard Bank by absolving them of having to write the extensive management code, the Team have fast-tracked the associated backlog ticket items.</p>
+            <p>
+                <br/>
+                <p>Thread Pooling:&nbsp;Repo Three now includes 3 specific sets of thread pools:</p>
+                <ol>
+                    <li>Processing thread pool: used for multithreading all intensive processing tasks associated with Evaluation, Report Generation and Validation. The default thread pool size is analogous to the number of available processor cores, but
+                        also allows for modifiers to be set, or a static pool size if so desired.</li>
+                    <li>Submission thread pool: used for multithreading all data submission tasks to the Report Services Apis.&nbsp;The default thread pool size is analogous to a multiple of the available processor cores.&nbsp;The majority of the tasks assigned
+                        to this thread pool will require little in the way of intensive CPU processing, but would instead require an event-driven response as each payload is communicated and responded to by the server.&nbsp;Modifiers are available to
+                        configure a more fine-grained number of threads based on the number of available cores, or a static number may be configured.</li>
+                    <li>Task thread pool: This thread pool has been added to cater for background tasks like the newly introduced worker thread which periodically checks for expired validator instances and recreates them.&nbsp;Additional product or custom
+                        worker threads may be added as needed and configured with their own internal scheduling – be it based on sleep timers, scheduled kick-off times etc.</li>
+                </ol>
+                <p>
+                    <br/>
+                    <p>Implementation of the Local library is focused on re-use, and will provide the hosting system with access to the thread pools if so required.&nbsp;This will allow the host system(s) to make use of the standard thread pool management
+                        code to either run custom workers in one of the above thread pool instances, or to create a separate thread pool instance in which to run tasks and workers – in general isolation from the thread pools.</p>
+                    <p>The background task worker associated with refreshing the validator instances is a basic implementation only and the period at which it runs can be configured.&nbsp;Additional work is planned to make the worker more robust and configurable
+                        where possible.</p>
+                    <p>
+                        <br/>
+                        <p>The bulk processing functions and data types are not equipped or designed to handle ~”infinitely“ or overtly large batches.&nbsp;Caution is recommended, so as not to load more data into a bulk function than can be allocated to
+                            the configured, available heap space.&nbsp;Batches should thus be kept to less than ~1000 records where possible.&nbsp;</p>
+                        <p>
+                            <br/>
+                            <p>...Backlog items are queued for exploring alternate mechanisms of loading excessively large batches within the constraints of the available heap space, but are not yet prioritised for research and development.&nbsp;Such functionality
+                                may require alternate data serialization formats that would better allow for buffering and re-batching of data into more manageable batch sizes.</p>
+                            <p>
+                                <br/>
+                                <p>Heap space management is presently left to the automated garbage collector and in severe cases of resource consumption, may also cause degradation of service as the processing of the batched data contends with the garbage
+                                    collection process.</p>
+                                <p>
+                                    <br/>
+                                    <p>As with the thread pools, the FreeMarker templating functionality is also designed for re-use and is thus available to the hosting application for use with any data and custom templates. </p>
+                                    <p>Persistence of the Local configurations is not natively supported in the current version, but will be added at a later stage (to some degree).</p>
+                                    <p>
+                                        <br/>
+                                        <p>Additional functionality to use memory persistence of the artefacts from Report Data Store will be added as an alternative to the current File system storage mechanism.</p>
+        </div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon">
+                <span class="material-icons dark">&#xf232;</span>
+            </div>
+            <div class="chipContent">
+                <div class="subheading">Changes</div>
+            </div>
+        </div>
+        <br/>
+        <div class="subheadingContent">
+            <p>Repo Two has undergone extensive changes to the core functions to make use of commonly configured and instantiated thread pools.&nbsp;As a result, many of the standard functions have had to undergo basic refactoring and clean up, and
+                have likely been altered to be either thread-safe or more performant.&nbsp;&nbsp;Internal data structures and types are now making use of recommended Java classes as applicable to the multi-threading scenarios.&nbsp;Static functions have
+                in many instances been moved to member functions for the specific class.</p>
+        </div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon">
+                <span class="material-icons dark">&#xe868;</span>
+            </div>
+            <div class="chipContent">
+                <div class="subheading">Testing</div>
+            </div>
+        </div>
+        <br/>
+        <div class="subheadingContent">
+            <p>Using the example code project, the client can select and run any of the test cases they choose.</p>
+            <p>Provided test cases currently detail how to implement the specific functionality in a basic form, and offer various alternatives to provide complete coverage of all integration scenarios.</p>
+            <p>Current test cases explore complete, end-to-end scenarios for either single transactions or bulk, batched transactions.</p>
+            <p>
+                <br/>
+                <p>The thread pooling and instance management can be observed more readily when performing large bulk batches.&nbsp;This is easily noted by having a CPU monitor open to show the loads across all processors as well as the general memory usage
+                    and stats where available.</p>
+                <p>In Windows, you can get access to the CPU profiler in the Task Manager by pressing CTRL+SHIFT+ESC and selecting the “Performance” tab.&nbsp;Once the CPU and Memory profilers are open, select the specific test case to run (in an IDE such
+                    as IntelliJ) and execute them.&nbsp;</p>
+                <p>The threading will make efficient use of multiple CPU cores in parallel.&nbsp;By adding break points at strategic function calls and code points, you can track the resource usages for each step of the process.</p>
+                <p>
+                    <br/>
+                    <p>It is important to note that a particular test case was added with the sole purpose of stress-testing the threading in a realistic manner.&nbsp;This works by spawning multiple threads that each spawn a separate set of work (bulk transactions)
+                        with a random delay and number of records to process.&nbsp;These separate main threads would simulate having a multi-threaded workflow system that makes simultaneous asynchronous calls to the Rules Engine (often resulting in contention
+                        problems under normal circumstances).&nbsp;The result of the new improvements should be a smooth interaction with the workload being concurrently spread across the available processors.&nbsp;</p>
+        </div>
+    </div>
+</div>

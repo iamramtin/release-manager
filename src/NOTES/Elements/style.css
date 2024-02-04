@@ -1,0 +1,267 @@
+/* *** HTML TAGS *** */
+@media print {
+    body {
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+h1 {
+    color: #222222;
+}
+
+h3 {
+    text-align: center;
+    margin: 60px 0px 0px 0px;
+}
+
+h4 {
+    color: #5eb3e4;
+    margin: 0px;
+    display: inline;
+}
+
+a {
+    color: #11253A;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2196F3;
+    text-decoration: underline;
+}
+
+li {
+    margin: 0px 0px 0px 15px;
+}
+
+/* *** CUSTOM TAGS *** */
+.frontCoverIncludedComponents {
+  position: absolute;
+  top: 63%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: #000000;
+  line-height: 175%;
+  font-weight: lighter;
+  font-family: Verdana;
+  font-size: 20px;
+}
+
+.frontCoverVersion {
+  position: absolute;
+  top: 89%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: #000000;
+  font-family: Verdana;
+  font-weight: bold;
+  font-size: 23px;
+}
+
+.frontCoverDate {
+  position: absolute;
+  top: 92%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: #000000;
+  font-family: Verdana;
+  font-size: 20px;
+}
+
+.all {
+    font-family: arial;
+    color: #11253A;
+    margin: 80px;
+    line-height: 170%
+}
+
+.introductionContent {
+    text-align: left;
+    margin: -15px 0px 0px 0px;
+}
+
+.productsList {
+    text-align: left;
+    margin: 40px 0px 0px 0px;
+}
+
+.documentHeading, .documentHeadingWithBreak {
+    margin: 75px 0px 20px 0px;
+    color: #11253A;
+    text-align: left;
+    font-size: 34px;
+    font-weight: bold;
+}
+
+.documentHeadingWithBreak {
+    page-break-before: always;
+}
+
+.tableOfContentsHeading1Group {
+    margin: 30px 0px 0px 25px;
+}
+
+.tableOfContentsHeading1 {
+    color: #8A5590;
+    text-align: left;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px 0px 0px 15px;
+}
+
+.tableOfContentsHeading2 {
+    color: #062F5A;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 20px 0px 0px 71px;
+}
+
+.tableOfContentsHeading3 {
+    color: #11253A;
+    text-align: left;
+    font-size: 12px;
+    margin: 20px 0px 0px 98px;
+}
+
+.repoHeading, .repoHeadingWithoutBreak {
+    color: #062F5A;
+    text-align: left;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 60px 0px 0px 0px;
+}
+
+.repoHeading {
+    page-break-before: always;
+    page-break-after: avoid;
+}
+
+.uncollatedNote, .firstUncollatedNote {
+    margin: -30px 0px 30px 0px;
+}
+
+.uncollatedNote {
+    page-break-inside: avoid;
+    margin: -30px 0px 30px 0px;
+}
+
+.uncollatedNote img {
+    page-break-inside: avoid;
+    max-width: 650px;
+    height: 100%;
+}
+
+.subheading {
+    page-break-before: always;
+    color: #646464;
+    margin: 0px;
+    display: inline;
+}
+
+.commitDate {
+    color: #ea6852;
+    font-weight: bold;
+    font-size: 18px;
+    text-decoration: underline;
+    margin: 25px 0px 20px 0px;
+}
+
+.uncollatedNoteContent {
+    page-break-before: avoid;
+    margin: 15px 30px 15px 30px;
+    color: #555;
+}
+
+.subheadingContent {
+    page-break-before: avoid;
+    margin: 10px 0px 20px 40px;
+    color: #555;
+}
+
+.title {
+    page-break-before: avoid;
+    color: #2196F3;
+    font-weight: bold;
+    font-size: 22px;
+    text-align: left;
+    padding: 80px 0px 15px 0px;
+}
+
+.tableOfContents {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.contentsHeader {
+    text-align: center;
+    margin: 30px 0px 15px 0px;
+    display: block;
+    font-size: 1.17em;
+    font-weight: bold;
+}
+
+.frontCover {
+    color: white;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    vertical-align: middle;
+
+    width: 100%;
+}
+
+.frontCover img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+
+/*************************************************/
+
+.chip{
+    display: inline-flex;
+    flex-direction: row;
+    background-color: #e5e5e5;
+    height: 30px;
+    font-size: 14px;
+    font-color: #646464;
+    font-family:"Open Sans", sans-serif;
+    align-items: center;
+    border-radius: 16px;
+    vertical-align: middle;
+    justify-content: center;
+ }
+
+ .chipIcon{
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    font-size: 1.25rem;
+    align-items: center;
+    border-radius: 50%;
+    justify-content: center;
+    width: 36px;
+    color: #fff;
+    height: 36px;
+    font-size: 20px;
+    margin-right: -10px;
+ }
+
+ .chipContent{
+    cursor: inherit;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    padding-right: 12px;
+ }
+
+.material-icons.dark {
+    color: #646464;
+    font-size: 16px;
+}

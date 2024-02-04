@@ -1,0 +1,58 @@
+<div class="uncollatedNote">
+    <div class="title">
+        <div class="titleContent">Refinements to AccountEntryUpload process</div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon"><span class="material-icons dark">&#xe54e;</span></div>
+            <div class="chipContent">
+                <div class="subheading">Tickets</div>
+            </div>
+        </div>
+        <div class="subheadingContent">FIN-1508</div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon"><span class="material-icons dark">&#xe892;</span></div>
+            <div class="chipContent">
+                <div class="subheading">Category</div>
+            </div>
+        </div>
+        <div class="subheadingContent">Enhancement, Refactor</div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon"><span class="material-icons dark">&#xe8e1;</span></div>
+            <div class="chipContent">
+                <div class="subheading">Impact</div>
+            </div>
+        </div>
+        <div class="subheadingContent">Report Data Store, TXstream</div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon"><span class="material-icons dark">&#xe873;</span></div>
+            <div class="chipContent">
+                <div class="subheading">Description</div>
+            </div>
+        </div><br/>
+        <div class="subheadingContent">
+            <p>Introduced minor refinements to the AccountEntry APIs for compatibility with the implementation in the Submission System.</p>
+        </div>
+    </div>
+    <div class="uncollatedNoteContent">
+        <div class="chip">
+            <div class="chipIcon"><span class="material-icons dark">&#xf232;</span></div>
+            <div class="chipContent">
+                <div class="subheading">Changes</div>
+            </div>
+        </div><br/>
+        <div class="subheadingContent">
+            <p>Replaced the mandatory TrnReference parameters with an optional "UploadReference" parameter. This is due to the implementation that was chosen for the submission system, whereby an account entry upload may contain multiple account entries.
+                Report Data store is still agnostic to the file contents and/or schema , though it is to be noted that the JSON to be uploaded is analogous to the Submission System XML schema - this is a requirement for the Submission System to be able
+                to consume the data.</p>
+            <p><br></p>
+            <p>Other than this, the AccountEntryDownload population has been configured to add an entry for EVERY upload - regardless of the reference uniqueness.</p>
+        </div>
+    </div>
+</div>
