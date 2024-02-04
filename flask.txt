@@ -1,0 +1,4 @@
+sudo nano /etc/nginx/sites-enabled/flaskapp
+change: "listen [port];"
+
+sudo service nginx restart
